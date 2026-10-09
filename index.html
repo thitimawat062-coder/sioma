@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>คู่มือดูแลตนเอง — ผู้ป่วยมะเร็งต่อมน้ำเหลืองที่รับเคมีบำบัด</title>
+<style>
+  :root {
+    --bg: #f4f6f8;
+    --card-bg: #ffffff;
+    --text: #1b1b1b;
+    --muted: #5a6572;
+    --accent: #1565c0;
+    --accent-dark: #0d47a1;
+    --urgent: #d32f2f;
+    --urgent-bg: #fdecea;
+    --warn: #ef6c00;
+    --warn-bg: #fff4e5;
+    --safe: #2e7d32;
+    --safe-bg: #e8f5e9;
+    --line: #e0e4e8;
+    --radius: 14px;
+  }
+
+  * { box-sizing: border-box; }
+
+  html { -webkit-text-size-adjust: 100%; }
+
+  body {
+    margin: 0;
+    font-family: system-ui, -apple-system, "Segoe UI", "Sarabun", "Noto Sans Thai", Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.65;
+    font-size: 18px;
+  }
+
+  .wrap {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 0 14px 60px;
+  }
+
+  /* ---------- Header ---------- */
+  header {
+    background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+    color: #fff;
+    padding: 22px 16px 18px;
+    text-align: center;
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+  }
+  header h1 {
+    margin: 0 0 4px;
+    font-size: 1.35rem;
+    line-height: 1.35;
+  }
+  header p {
+    margin: 0;
+    font-size: 0.95rem;
+    opacity: 0.92;
+  }
+
+  /* ---------- Tabs ---------- */
+  nav.tabs {
+    display: flex;
+    gap: 6px;
+    background: var(--card-bg);
+    padding: 8px;
+    border-radius: var(--radius);
+    margin: 16px 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    position: sticky;
+    top: 86px;
+    z-index: 15;
+    flex-wrap: wrap;
+  }
+  nav.tabs button {
+    flex: 1 1 auto;
+    min-width: 100px;
+    font: inherit;
+    font-size: 0.95rem;
+    font-weight: 600;
+    padding: 12px 6px;
+    border: 2px solid transparent;
+    border-radius: 10px;
+    background: #eef2f7;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  nav.tabs button.active {
+    background: var(--accent);
+    color: #fff;
+  }
+  nav.tabs button:focus-visible {
+    outline: 3px solid var(--warn);
+    outline-offset: 2px;
+  }
+
+  .panel { display: none; }
+  .panel.active { display: block; animation: fade 0.2s ease; }
+  @keyframes fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+  /* ---------- Cards ---------- */
+  .card {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    padding: 18px;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    border: 1px solid var(--line);
+  }
+  .card h2 {
+    margin: 0 0 10px;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card h3 {
+    margin: 16px 0 6px;
+    font-size: 1.05rem;
+    color: var(--accent-dark);
+  }
+  .card ul { margin: 6px 0; padding-left: 22px; }
+  .card li { margin-bottom: 7px; }
+  .emoji { font-size: 1.3rem; }
+
+  .banner {
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-bottom: 14px;
+    border-left: 6px solid;
+    font-size: 1rem;
+  }
+  .banner.urgent { background: var(--urgent-bg); border-color: var(--urgent); color: #8d1a12; }
+  .banner.warn   { background: var(--warn-bg);   border-color: var(--warn);   color: #7a3c00; }
+  .banner.safe   { background: var(--safe-bg);   border-color: var(--safe);   color: #1b5e20; }
+  .banner strong { display: block; font-size: 1.05rem; margin-bottom: 3px; }
+
+  .sym-list { list-style: none; padding: 0; margin: 0; }
+  .sym-list li {
+    padding: 11px 14px;
+    margin-bottom: 8px;
+    border-radius: 10px;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .sym-list.urgent li { background: var(--urgent-bg); }
+  .sym-list.warn li   { background: var(--warn-bg); }
+  .sym-list .ic { flex: 0 0 auto; font-size: 1.2rem; }
+
+  /* ---------- Symptom checker ---------- */
+  .q-card { text-align: center; }
+  .q-progress {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+  .q-bar {
+    height: 8px;
+    background: #e5eaf0;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 18px;
+  }
+  .q-bar > div { height: 100%; background: var(--accent); width: 0; transition: width 0.3s; }
+  .q-text {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 10px 0 22px;
+    min-height: 3em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .q-btns { display: flex; gap: 12px; }
+  .q-btns button {
+    flex: 1;
+    font: inherit;
+    font-size: 1.15rem;
+    font-weight: 700;
+    padding: 16px 0;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: transform 0.05s, filter 0.1s;
+  }
+  .q-btns button:active { transform: scale(0.97); }
+  .btn-yes { background: var(--urgent); color: #fff; }
+  .btn-no  { background: #e8edf2; color: var(--text); }
+  .btn-yes:hover, .btn-no:hover { filter: brightness(0.96); }
+
+  .result { text-align: center; }
+  .result .big-icon { font-size: 3.4rem; line-height: 1; margin-bottom: 8px; }
+  .result h2 { justify-content: center; font-size: 1.5rem; }
+  .result .phone {
+    display: inline-block;
+    font-size: 2rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+    margin: 10px 0;
+    padding: 8px 24px;
+    border-radius: 12px;
+    background: #fff;
+    border: 2px dashed currentColor;
+  }
+  .result ul { text-align: left; }
+
+  .btn {
+    font: inherit;
+    font-weight: 600;
+    font-size: 1.05rem;
+    padding: 13px 20px;
+    border: none;
+    border-radius: 12px;
+    background: var(--accent);
+    color: #fff;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 8px;
+    transition: filter 0.1s, transform 0.05s;
+  }
+  .btn:hover { filter: brightness(0.95); }
+  .btn:active { transform: scale(0.98); }
+  .btn.secondary { background: #e8edf2; color: var(--text); }
+
+  /* ---------- Contact ---------- */
+  .contact-row { margin-bottom: 14px; }
+  .contact-row label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 4px;
+    font-size: 0.95rem;
+  }
+  .contact-row input {
+    width: 100%;
+    font: inherit;
+    padding: 12px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: #fafbfc;
+  }
+  .contact-row input:focus { outline: 2px solid var(--accent); border-color: var(--accent); }
+  .saved-note { font-size: 0.85rem; color: var(--safe); margin-top: 6px; min-height: 1.2em; }
+
+  .call-link {
+    display: block;
+    text-align: center;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 1.1rem;
+    padding: 15px;
+    border-radius: 12px;
+    background: var(--safe);
+    color: #fff;
+    margin-top: 10px;
+  }
+
+  /* ---------- Disclaimer ---------- */
+  .disclaimer {
+    font-size: 0.85rem;
+    color: var(--muted);
+    background: #eef2f7;
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-top: 18px;
+    line-height: 1.55;
+  }
+  .disclaimer strong { color: var(--urgent); }
+
+  footer {
+    text-align: center;
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin-top: 24px;
+  }
+
+  @media (max-width: 420px) {
+    body { font-size: 17px; }
+    header h1 { font-size: 1.15rem; }
+    nav.tabs button { min-width: 72px; font-size: 0.82rem; padding: 10px 4px; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>คู่มือดูแลตนเอง<br>ผู้ป่วยมะเร็งต่อมน้ำเหลืองที่รับเคมีบำบัด</h1>
+  <p>ความรู้การดูแลตนเอง และการประเมินอาการเบื้องต้น</p>
+</header>
+
+<div class="wrap">
+  <nav class="tabs" role="tablist" aria-label="เมนูหลัก">
+    <button role="tab" class="tab-btn active" data-tab="care" aria-selected="true">🏠 ดูแลตนเอง</button>
+    <button role="tab" class="tab-btn" data-tab="urgent" aria-selected="false">🚨 อาการเตือน</button>
+    <button role="tab" class="tab-btn" data-tab="checker" aria-selected="false">✅ ประเมินอาการ</button>
+    <button role="tab" class="tab-btn" data-tab="contact" aria-selected="false">📞 ติดต่อ</button>
+  </nav>
+
+  <!-- ============ TAB 1: การดูแลตนเอง ============ -->
+  <section class="panel active" id="tab-care" role="tabpanel">
+    <div class="banner safe">
+      <strong>ยาเคมีบำบัดทำให้ภูมิคุ้มกันต่ำลง</strong>
+      ช่วง 7–14 วันหลังรับยา เม็ดเลือดขาวมักต่ำที่สุด เป็นช่วงที่ติดเชื้อง่ายที่สุด ต้องระวังเป็นพิเศษ
+    </div>
+
+    <div class="card">
+      <h2><span class="emoji">🛡️</span> ป้องกันการติดเชื้อ (สำคัญที่สุด)</h2>
+      <ul>
+        <li>ล้างมือบ่อย ๆ ด้วยสบู่หรือเจลแอลกอฮอล์ โดยเฉพาะก่อนกินข้าวและหลังเข้าห้องน้ำ</li>
+        <li>เลี่ยงที่คนแออัด และคนที่กำลังเป็นหวัด/ไข้ หากต้องออกนอกบ้านให้ใส่หน้ากากอนามัย</li>
+        <li>ไม่คลุกคลีกับผู้ที่เพิ่งได้รับวัคซีนเชื้อเป็น และปรึกษาแพทย์ก่อนฉีดวัคซีนทุกชนิด</li>
+        <li>วัดอุณหภูมิร่างกายทุกวัน และทุกครั้งที่รู้สึกไม่สบายหรือหนาวสั่น</li>
+        <li>ดูแลช่องปากและผิวหนังให้สะอาด เลี่ยงการเกาจนเป็นแผล</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2><span class="emoji">🍽️</span> อาหารและโภชนาการ</h2>
+      <ul>
+        <li>กินอาหารปรุงสุกใหม่ ร้อน สะอาด เลี่ยงอาหารดิบ/กึ่งสุกกึ่งดิบ (ปลาดิบ ไข่ดิบ ลาบดิบ)</li>
+        <li>ล้างผัก–ผลไม้ให้สะอาด เลือกผลไม้ที่ปอกเปลือกได้</li>
+        <li>ดื่มน้ำสะอาดให้เพียงพอ อย่างน้อย 8–10 แก้วต่อวัน (หากแพทย์ไม่ได้จำกัดน้ำ)</li>
+        <li>แบ่งกินทีละน้อยแต่บ่อยครั้ง หากคลื่นไส้หรือเบื่ออาหาร</li>
+        <li>เลี่ยงเหล้า บุหรี่ และของหมักดอง</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2><span class="emoji">🤢</span> คลื่นไส้ อาเจียน</h2>
+      <ul>
+        <li>กินยาแก้คลื่นไส้ตามที่แพทย์สั่งอย่างสม่ำเสมอ อย่ารอให้คลื่นไส้มากก่อน</li>
+        <li>กินอาหารอ่อน รสไม่จัด เลี่ยงอาหารมัน ทอด และกลิ่นแรง</li>
+        <li>จิบน้ำขิงหรืออมของเปรี้ยวเล็กน้อยอาจช่วยได้</li>
+        <li>พักหลังมื้ออาหาร อย่าล้มตัวนอนราบทันที</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2><span class="emoji">👄</span> แผลในปาก / เยื่อบุช่องปากอักเสบ</h2>
+      <ul>
+        <li>แปรงฟันด้วยแปรงขนนุ่ม หลังอาหารทุกมื้อและก่อนนอน</li>
+        <li>บ้วนปากด้วยน้ำเกลืออุ่น (เกลือ 1/2 ช้อนชา + น้ำ 1 แก้ว) วันละหลายครั้ง</li>
+        <li>เลี่ยงน้ำยาบ้วนปากที่มีแอลกอฮอล์ อาหารเผ็ดจัด เปรี้ยวจัด และร้อนจัด</li>
+        <li>ทาลิปมันกันปากแห้งแตก</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2><span class="emoji">💩</span> ท้องเสีย หรือ ท้องผูก</h2>
+      <h3>ถ้าท้องเสีย</h3>
+      <ul>
+        <li>จิบน้ำเกลือแร่ (ORS) ทีละน้อยบ่อย ๆ เพื่อป้องกันขาดน้ำ</li>
+        <li>กินอาหารอ่อน ย่อยง่าย เช่น ข้าวต้ม กล้วยน้ำว้า เลี่ยงนมและของมัน</li>
+      </ul>
+      <h3>ถ้าท้องผูก</h3>
+      <ul>
+        <li>ดื่มน้ำมากขึ้น กินผักผลไม้ที่ล้างสะอาด และขยับร่างกายเบา ๆ</li>
+        <li>ใช้ยาระบายเฉพาะเมื่อแพทย์/พยาบาลแนะนำ</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2><span class="emoji">💇</span> ผมร่วง และผิวหนัง</h2>
+      <ul>
+        <li>ผมร่วงเป็นผลข้างเคียงชั่วคราว มักกลับมางอกใหม่หลังหยุดยา</li>
+        <li>ใช้แชมพูอ่อน หวีขนนุ่ม เลี่ยงการย้อม/ดัด และความร้อนจากไดร์</li>
+        <li>ปกป้องผิวจากแดด ทาครีมกันแดด สวมหมวกหรือผ้าคลุมศีรษะ</li>
+        <li>ทาโลชั่นให้ผิวชุ่มชื้น เลี่ยงสบู่ที่ทำให้ผิวแห้ง</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2><span class="emoji">😴</span> อ่อนเพลีย และสุขภาพใจ</h2>
+      <ul>
+        <li>พักผ่อนให้เพียงพอ จัดกิจกรรมในช่วงที่รู้สึกมีแรงที่สุดของวัน</li>
+        <li>ออกกำลังกายเบา ๆ เช่น เดินช้า ๆ เท่าที่ไหว</li>
+        <li>พูดคุยระบายความรู้สึกกับครอบครัวหรือทีมผู้ดูแล ความเครียด/ซึมเศร้าเป็นเรื่องที่ขอความช่วยเหลือได้</li>
+        <li>ไปตามนัดทุกครั้ง และจดคำถามไว้ถามแพทย์/พยาบาล</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============ TAB 2: อาการเตือน ============ -->
+  <section class="panel" id="tab-urgent" role="tabpanel">
+    <div class="banner urgent">
+      <strong>🚨 อาการเร่งด่วน — ต้องรีบมาโรงพยาบาลทันที</strong>
+      หากมีอาการใดอาการหนึ่งต่อไปนี้ ให้ติดต่อหน่วยเคมีบำบัด/มาห้องฉุกเฉินทันที ไม่ต้องรอนัด
+    </div>
+    <ul class="sym-list urgent">
+      <li><span class="ic">🌡️</span><span><strong>ไข้ตั้งแต่ 38.0°C ขึ้นไป</strong> หรือหนาวสั่น (สำคัญที่สุด — อาจเป็นภาวะติดเชื้อขณะเม็ดเลือดขาวต่ำ ซึ่งเป็นภาวะฉุกเฉิน)</span></li>
+      <li><span class="ic">🩸</span><span>มีเลือดออกผิดปกติ เช่น เลือดกำเดาไหลไม่หยุด เลือดออกตามไรฟัน จ้ำเลือด/จุดเลือดออกตามตัว อาเจียน/ถ่ายเป็นเลือดหรือสีดำ</span></li>
+      <li><span class="ic">😮‍💨</span><span>หายใจลำบาก หอบเหนื่อย เจ็บแน่นหน้าอก หรือใจสั่นมาก</span></li>
+      <li><span class="ic">🤮</span><span>อาเจียนหรือท้องเสียรุนแรงจนกินดื่มไม่ได้ ปัสสาวะน้อยลงมาก หรือมีสัญญาณขาดน้ำ</span></li>
+      <li><span class="ic">🧠</span><span>ซึมลง สับสน ปลุกไม่ค่อยตื่น ชัก หรือปวดศีรษะรุนแรงเฉียบพลัน</span></li>
+      <li><span class="ic">💊</span><span>มีผื่น บวมหน้า/ปาก หายใจไม่ออกหลังได้รับยา (สงสัยแพ้ยารุนแรง)</span></li>
+      <li><span class="ic">🦵</span><span>ขาบวมข้างเดียว ปวด แดง ร้อน หรือเจ็บหน้าอกร่วมกับหายใจเหนื่อย (สงสัยลิ่มเลือด)</span></li>
+      <li><span class="ic">📍</span><span>บริเวณที่ฝังพอร์ต/ให้ยา มีบวม แดง ร้อน ปวด หรือมีหนอง</span></li>
+    </ul>
+
+    <div class="banner warn" style="margin-top:22px;">
+      <strong>⚠️ อาการไม่เร่งด่วน — ดูแลตนเองเบื้องต้นได้</strong>
+      จัดการเองที่บ้านได้ แต่ควรจดบันทึกไว้ และแจ้งทีมผู้ดูแลในนัดครั้งถัดไป หากอาการไม่ดีขึ้นภายใน 2–3 วัน ให้โทรปรึกษาหน่วยเคมีบำบัด
+    </div>
+    <ul class="sym-list warn">
+      <li><span class="ic">🤢</span><span>คลื่นไส้/อาเจียนเล็กน้อย ที่ยังกินยาแก้คลื่นไส้แล้วดีขึ้น และยังกินดื่มได้</span></li>
+      <li><span class="ic">😴</span><span>อ่อนเพลีย เหนื่อยง่ายเล็กน้อย ที่พักแล้วดีขึ้น</span></li>
+      <li><span class="ic">💇</span><span>ผมร่วง (ไม่อันตราย เป็นผลข้างเคียงชั่วคราว)</span></li>
+      <li><span class="ic">👄</span><span>ปากแห้ง รสชาติเปลี่ยน หรือแผลในปากเล็กน้อยที่ยังกินได้</span></li>
+      <li><span class="ic">💩</span><span>ท้องผูก หรือท้องเสียเล็กน้อย 1–2 ครั้ง ที่ยังกินดื่มได้</span></li>
+      <li><span class="ic">🖐️</span><span>ชา/เสียวปลายมือปลายเท้าเล็กน้อย</span></li>
+    </ul>
+    <p style="font-size:0.9rem;color:var(--muted);">
+      ไม่แน่ใจว่าอาการของตนอยู่กลุ่มไหน? ไปที่แท็บ <strong>“✅ ประเมินอาการ”</strong> เพื่อประเมินทีละข้อ
+    </p>
+  </section>
+
+  <!-- ============ TAB 3: Symptom Checker ============ -->
+  <section class="panel" id="tab-checker" role="tabpanel">
+    <div class="card q-card" id="checker-box">
+      <!-- JS จะเติมเนื้อหาตรงนี้ -->
+    </div>
+    <p class="disclaimer" style="margin-top:0;">
+      แบบประเมินนี้ยึดหลัก <strong>“เผื่อความปลอดภัยไว้ก่อน”</strong> หากไม่แน่ใจ ระบบจะแนะนำให้ติดต่อโรงพยาบาลเสมอ
+    </p>
+  </section>
+
+  <!-- ============ TAB 4: ติดต่อ ============ -->
+  <section class="panel" id="tab-contact" role="tabpanel">
+    <div class="card">
+      <h2><span class="emoji">📞</span> เบอร์ติดต่อหน่วยเคมีบำบัด</h2>
+      <p style="font-size:0.9rem;color:var(--muted);margin-top:0;">
+        กรอกเบอร์ของหน่วยเคมีบำบัด/พยาบาลที่ดูแล เพื่อให้ผู้ป่วยกดโทรได้ทันทีเมื่อมีอาการ
+        (ข้อมูลถูกบันทึกไว้ในเครื่องนี้เท่านั้น ไม่ถูกส่งออกไปที่ใด)
+      </p>
+
+      <div class="contact-row">
+        <label for="unit-name">ชื่อหน่วย / โรงพยาบาล</label>
+        <input id="unit-name" type="text" placeholder="เช่น หน่วยเคมีบำบัด รพ. ..." />
+      </div>
+      <div class="contact-row">
+        <label for="unit-phone">เบอร์หน่วยเคมีบำบัด</label>
+        <input id="unit-phone" type="tel" inputmode="tel" placeholder="เช่น 0-2xxx-xxxx" />
+      </div>
+      <div class="contact-row">
+        <label for="unit-hours">เวลาทำการ / เบอร์นอกเวลา</label>
+        <input id="unit-hours" type="text" placeholder="เช่น จ.–ศ. 8.00–16.00 น. / นอกเวลาโทร ..." />
+      </div>
+
+      <button class="btn" id="save-contact">💾 บันทึกข้อมูลติดต่อ</button>
+      <p class="saved-note" id="saved-note"></p>
+
+      <a class="call-link" id="call-unit" href="#" style="display:none;">📱 กดโทรหาหน่วยเคมีบำบัด</a>
+      <a class="call-link" href="tel:1669" style="background:var(--urgent);">🚑 โทรฉุกเฉิน 1669 (กรณีวิกฤต)</a>
+    </div>
+
+    <div class="disclaimer">
+      <strong>คำปฏิเสธความรับผิด (Disclaimer):</strong>
+      เครื่องมือนี้เป็นสื่อให้ความรู้และช่วยคัดกรองอาการ <strong>เบื้องต้น</strong> เท่านั้น
+      ไม่สามารถใช้แทนการวินิจฉัย การตรวจ หรือคำแนะนำของแพทย์และพยาบาลผู้ดูแลได้
+      แนวทางการดูแลและเกณฑ์อาการต่าง ๆ อาจแตกต่างกันตามแผนการรักษาของผู้ป่วยแต่ละราย
+      <strong>หากไม่แน่ใจ หรืออาการแย่ลง ให้ติดต่อหน่วยเคมีบำบัด หรือโทร 1669 ทันทีเสมอ</strong>
+    </div>
+
+    <footer>
+      จัดทำเพื่อการให้ความรู้ผู้ป่วย • เนื้อหาควรได้รับการตรวจสอบโดยแพทย์/พยาบาลผู้ดูแลก่อนใช้งานจริง
+    </footer>
+  </section>
+</div>
+
+<script>
+  "use strict";
+
+  /* ---------- Tab navigation ---------- */
+  const tabButtons = document.querySelectorAll(".tab-btn");
+  const panels = document.querySelectorAll(".panel");
+  tabButtons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const tab = btn.dataset.tab;
+      tabButtons.forEach((b) => {
+        const on = b === btn;
+        b.classList.toggle("active", on);
+        b.setAttribute("aria-selected", on ? "true" : "false");
+      });
+      panels.forEach((p) => p.classList.toggle("active", p.id === "tab-" + tab));
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      if (tab === "checker") startChecker();
+    });
+  });
+
+  /* ---------- Symptom Checker ----------
+     แนวคิด: ถามอาการ "เร่งด่วน" ทีละข้อ ยึดหลัก safety-first
+     ตอบ "ใช่" แม้ข้อเดียว => หน้าสีแดง รีบมา รพ. ทันที
+     ตอบ "ไม่ใช่" ทุกข้อ   => ถามกลุ่มอาการไม่เร่งด่วน => คำแนะนำดูแลตนเอง
+  */
+  const URGENT_QUESTIONS = [
+    "มีไข้ตั้งแต่ 38.0°C ขึ้นไป หรือรู้สึกหนาวสั่น ใช่หรือไม่?",
+    "มีเลือดออกผิดปกติ เช่น เลือดกำเดาไม่หยุด ถ่าย/อาเจียนเป็นเลือดหรือสีดำ หรือจ้ำเลือดตามตัว ใช่หรือไม่?",
+    "หายใจลำบาก หอบเหนื่อย เจ็บแน่นหน้าอก หรือใจสั่นมาก ใช่หรือไม่?",
+    "อาเจียนหรือท้องเสียรุนแรงจนกินดื่มไม่ได้ หรือปัสสาวะน้อยลงมาก ใช่หรือไม่?",
+    "ซึมลง สับสน ปลุกไม่ค่อยตื่น ชัก หรือปวดศีรษะรุนแรงเฉียบพลัน ใช่หรือไม่?",
+    "มีผื่น หน้า/ปากบวม หรือหายใจไม่ออกหลังได้รับยา ใช่หรือไม่?",
+    "บริเวณที่ฝังพอร์ต/ให้ยา บวม แดง ร้อน ปวด หรือมีหนอง / ขาบวมปวดแดงข้างเดียว ใช่หรือไม่?"
+  ];
+
+  const box = document.getElementById("checker-box");
+  let qIndex = 0;
+
+  function startChecker() {
+    qIndex = 0;
+    showQuestion();
+  }
+
+  function showQuestion() {
+    const total = URGENT_QUESTIONS.length;
+    const pct = Math.round((qIndex / total) * 100);
+    box.innerHTML = `
+      <div class="q-progress">คำถามข้อ ${qIndex + 1} จาก ${total}</div>
+      <div class="q-bar"><div style="width:${pct}%"></div></div>
+      <div class="q-text">${URGENT_QUESTIONS[qIndex]}</div>
+      <div class="q-btns">
+        <button class="btn-yes" id="ans-yes">ใช่ มีอาการนี้</button>
+        <button class="btn-no" id="ans-no">ไม่ใช่</button>
+      </div>
+    `;
+    document.getElementById("ans-yes").addEventListener("click", showUrgentResult);
+    document.getElementById("ans-no").addEventListener("click", nextQuestion);
+  }
+
+  function nextQuestion() {
+    qIndex++;
+    if (qIndex < URGENT_QUESTIONS.length) {
+      showQuestion();
+    } else {
+      showSafeResult();
+    }
+  }
+
+  function phoneForResult() {
+    const saved = loadContact();
+    const num = saved.phone ? saved.phone.replace(/[^0-9+]/g, "") : "";
+    if (num) {
+      return `<a class="call-link" href="tel:${num}">📱 กดโทรหาหน่วยเคมีบำบัด (${saved.phone})</a>`;
+    }
+    return `<a class="call-link" href="tel:1669" style="background:var(--urgent);">🚑 โทร 1669</a>`;
+  }
+
+  function showUrgentResult() {
+    box.innerHTML = `
+      <div class="result">
+        <div class="big-icon">🚨</div>
+        <h2 style="color:var(--urgent);">ควรรีบติดต่อ / มาโรงพยาบาลทันที</h2>
+        <div class="banner urgent" style="text-align:left;">
+          อาการที่ท่านมี เป็น <strong>อาการเร่งด่วน</strong> ในผู้ป่วยที่รับเคมีบำบัด
+          โดยเฉพาะอย่างยิ่ง <strong>ไข้ขณะเม็ดเลือดขาวอาจต่ำ</strong> ถือเป็นภาวะฉุกเฉิน
+          อย่ารอดูอาการที่บ้าน
+        </div>
+        <p>โทรหาหน่วยเคมีบำบัดที่ท่านรักษาอยู่ หรือมาที่ห้องฉุกเฉินทันที
+          และแจ้งเจ้าหน้าที่ว่า <strong>“กำลังรับยาเคมีบำบัด”</strong></p>
+        ${phoneForResult()}
+        <button class="btn secondary" id="restart" style="margin-top:16px;">↺ เริ่มประเมินใหม่</button>
+      </div>
+    `;
+    document.getElementById("restart").addEventListener("click", startChecker);
+  }
+
+  function showSafeResult() {
+    box.innerHTML = `
+      <div class="result">
+        <div class="big-icon">✅</div>
+        <h2 style="color:var(--safe);">ยังไม่พบอาการเร่งด่วน</h2>
+        <div class="banner safe" style="text-align:left;">
+          ขณะนี้ยังไม่พบอาการที่ต้องรีบมาโรงพยาบาลทันที สามารถดูแลตนเองเบื้องต้นที่บ้านได้
+        </div>
+        <div style="text-align:left;">
+          <h3 style="color:var(--accent-dark);">คำแนะนำ</h3>
+          <ul>
+            <li>วัดและจดอุณหภูมิร่างกายทุกวัน (และทุกครั้งที่รู้สึกไม่สบาย)</li>
+            <li>พักผ่อนให้พอ ดื่มน้ำสะอาดมาก ๆ และกินอาหารปรุงสุกสะอาด</li>
+            <li>ดูวิธีจัดการอาการแต่ละอย่างได้ที่แท็บ “🏠 ดูแลตนเอง”</li>
+          </ul>
+          <h3 style="color:var(--urgent);">ให้รีบติดต่อหน่วยเคมีบำบัดทันที หากเกิดอาการเหล่านี้</h3>
+          <ul>
+            <li><strong>ไข้ 38.0°C ขึ้นไป หรือหนาวสั่น</strong></li>
+            <li>เลือดออกผิดปกติ / หายใจเหนื่อย / ซึมลง สับสน</li>
+            <li>อาเจียน–ท้องเสียจนกินดื่มไม่ได้</li>
+          </ul>
+          <p style="font-size:0.9rem;color:var(--muted);">
+            หากอาการไม่ดีขึ้นใน 2–3 วัน หรือท่านไม่สบายใจ ให้โทรปรึกษาหน่วยเคมีบำบัดได้เสมอ
+          </p>
+        </div>
+        ${phoneForResult()}
+        <button class="btn secondary" id="restart" style="margin-top:16px;">↺ เริ่มประเมินใหม่</button>
+      </div>
+    `;
+    document.getElementById("restart").addEventListener("click", startChecker);
+  }
+
+  /* ---------- Contact storage (localStorage) ---------- */
+  const KEY = "lymphomaChemoContact";
+
+  function loadContact() {
+    try {
+      return JSON.parse(localStorage.getItem(KEY)) || {};
+    } catch (e) {
+      return {};
+    }
+  }
+
+  function applyContact() {
+    const c = loadContact();
+    if (c.name) document.getElementById("unit-name").value = c.name;
+    if (c.phone) document.getElementById("unit-phone").value = c.phone;
+    if (c.hours) document.getElementById("unit-hours").value = c.hours;
+    const callLink = document.getElementById("call-unit");
+    if (c.phone) {
+      callLink.href = "tel:" + c.phone.replace(/[^0-9+]/g, "");
+      callLink.style.display = "block";
+    } else {
+      callLink.style.display = "none";
+    }
+  }
+
+  document.getElementById("save-contact").addEventListener("click", () => {
+    const data = {
+      name: document.getElementById("unit-name").value.trim(),
+      phone: document.getElementById("unit-phone").value.trim(),
+      hours: document.getElementById("unit-hours").value.trim()
+    };
+    try {
+      localStorage.setItem(KEY, JSON.stringify(data));
+      document.getElementById("saved-note").textContent = "✓ บันทึกเรียบร้อยแล้ว";
+    } catch (e) {
+      document.getElementById("saved-note").textContent = "ไม่สามารถบันทึกในเครื่องนี้ได้ (เบราว์เซอร์ปิดการจัดเก็บ)";
+    }
+    applyContact();
+    setTimeout(() => { document.getElementById("saved-note").textContent = ""; }, 3000);
+  });
+
+  /* ---------- Init ---------- */
+  applyContact();
+</script>
+</body>
+</html>
